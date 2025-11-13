@@ -16,9 +16,13 @@ import { AccountsModule } from './features/Accounts/accounts.module';
     SalesModule,
     ExpenseModule,
     AccountsModule,
-    MongooseModule.forRoot('mongodb+srv://azibaliansari311_db_user:My10dollers$@cluster0.nktmmeq.mongodb.net/?appName=Cluster0'),],
+    MongooseModule.forRoot('mongodb+srv://isalman23701_db_user:HXsKVncBZroVVPaO@cluster0.qxavhuz.mongodb.net/'),],
 
   providers: [],
   controllers: [],
 })
 export class AppModule { }
+
+
+
+// mongodb+srv://isalman23701_db_user:<db_password>@cluster0.qxavhuz.mongodb.net/?appName=Cluster0
