@@ -27,4 +27,3 @@ export class AppModule { }
 
 
 
-// mongodb+srv://isalman23701_db_user:<db_password>@cluster0.qxavhuz.mongodb.net/?appName=Cluster0
