@@ -6,10 +6,10 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
-  // Disable built-in CORS to configure manually
+  // Disable default CORS to add our own
   const app = await NestFactory.create(AppModule, { cors: false });
 
-  // Swagger setup
+  // Swagger
   const config = new DocumentBuilder()
     .setTitle('Pos Inventory API')
     .setDescription('The pos-inventory API description')
@@ -19,7 +19,7 @@ async function bootstrap() {
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);
 
-  // Validation
+  // Global Validation
   app.useGlobalPipes(
     new ValidationPipe({
       transform: false,
@@ -28,25 +28,29 @@ async function bootstrap() {
     }),
   );
 
-  // 🚀 Manual CORS (needed for Render)
+  // 🚀 CORS for Vercel + localhost
   app.enableCors({
     origin: [
       'http://localhost:5173',
-      'https://ultra-water-frontend.vercel.app', // your frontend
+      'https://ultra-water-frontend.vercel.app',
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
-  // 🚀 Fix OPTIONS preflight errors on Render (NestJS + Express)
+  // 🚀 FIX: Preflight handler WITHOUT using options('*')
   const expressApp = app.getHttpAdapter().getInstance();
-  expressApp.options('*', (req: any, res: any) => {
-    res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
-    res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.send();
+
+  expressApp.use((req: any, res: any, next: any) => {
+    if (req.method === 'OPTIONS') {
+      res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+      res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
+      res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+      res.header('Access-Control-Allow-Credentials', 'true');
+      return res.sendStatus(200);
+    }
+    next();
   });
 
   await app.listen(process.env.PORT ?? 3000);
