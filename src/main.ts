@@ -30,7 +30,7 @@ async function bootstrap() {
 
   // 🚀 Dynamic CORS - works for both local and production
   const isDevelopment = process.env.NODE_ENV !== 'production';
-  
+
   app.enableCors({
     origin: (origin, callback) => {
       // Allow requests with no origin (like mobile apps, curl, Postman)
@@ -80,7 +80,7 @@ async function bootstrap() {
     if (origin) {
       res.header('Access-Control-Allow-Origin', origin);
     }
-    
+
     res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept, X-Requested-With');
     res.header('Access-Control-Allow-Credentials', 'true');
@@ -90,9 +90,9 @@ async function bootstrap() {
     if (req.method === 'OPTIONS') {
       return res.sendStatus(200);
     }
-    
+
     next();
-  });  await app.listen(process.env.PORT ?? 3000);
+  }); await app.listen(process.env.PORT ?? 3000);
 }
 
 bootstrap();
